@@ -15,12 +15,14 @@ import radioButtons from './shared/RadioButtons';
 import Header from './shared/Header';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/RootNavigation';
+import {useLanguageStore} from '../stores/language';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Examination'>;
 
 const EditPhysiotherapy = (props) => {
-  const {event, userName, language: lng = 'en'} = props.route.params;
-  const [language, setLanguage] = useState(lng);
+  const {language} = useLanguageStore();
+  const {event, userName} = props.route.params;
+
   const [previousTreatment, setPreviousTreatment] = useState(null);
   const [previousTreatmentText, setPreviousTreatmentText] = useState(null);
   const [complaint, setComplaint] = useState(null);
@@ -64,18 +66,14 @@ const EditPhysiotherapy = (props) => {
         }),
       )
       .then((response) =>
-        props.navigation.navigate('EventList', {events: response, language}),
+        props.navigation.navigate('EventList', {events: response}),
       );
   };
 
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <View style={styles.containerLeft}>
-        {Header({
-          action: () => props.navigation.navigate('EventList', {language}),
-          language,
-          setLanguage,
-        })}
+        <Header action={() => props.navigation.navigate('EventList', {})} />
         <View
           style={{
             flexDirection: 'row',

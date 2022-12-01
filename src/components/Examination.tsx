@@ -21,6 +21,7 @@ import {
 } from './shared/EventFieldDisplay';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/RootNavigation';
+import {useLanguageStore} from '../stores/language';
 
 export const ExaminationDisplay = (metadataObj, language) => {
   return (
@@ -60,12 +61,8 @@ export const ExaminationDisplay = (metadataObj, language) => {
 type Props = NativeStackScreenProps<RootStackParamList, 'Examination'>;
 
 const Examination = (props: Props) => {
-  const {
-    patientId,
-    visitId,
-    userName,
-    language: lng = 'en',
-  } = props.route.params;
+  const {language} = useLanguageStore();
+  const {patientId, visitId, userName} = props.route.params;
   const [examination, setExamination] = useState(null);
   const [generalObservations, setGeneralObservations] = useState(null);
   const [diagnosis, setDiagnosis] = useState(null);
@@ -73,7 +70,6 @@ const Examination = (props: Props) => {
   const [covid19, setCovid19] = useState(null);
   const [referral, setReferral] = useState(null);
   const [referralText, setReferralText] = useState(null);
-  const [language, setLanguage] = useState(lng);
 
   const submit = async () => {
     database
@@ -94,23 +90,21 @@ const Examination = (props: Props) => {
         }),
       })
       .then(() => {
-        props.navigation.navigate('NewVisit', {language, userName, visitId});
+        props.navigation.navigate('NewVisit', {userName, visitId});
       });
   };
 
   return (
     <ScrollView contentContainerStyle={{flex: 1}}>
       <View style={styles.containerLeft}>
-        {Header({
-          action: () =>
+        <Header
+          action={() =>
             props.navigation.navigate('NewVisit', {
-              language,
               userName,
               visitId,
-            }),
-          language,
-          setLanguage,
-        })}
+            })
+          }
+        />
         <View
           style={{
             flexDirection: 'row',

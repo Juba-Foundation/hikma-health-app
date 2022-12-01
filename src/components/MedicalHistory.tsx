@@ -16,6 +16,7 @@ import {LocalizedStrings} from '../enums/LocalizedStrings';
 import Header from './shared/Header';
 import {RootStackParamList} from '../navigation/RootNavigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useLanguageStore} from '../stores/language';
 
 export const MedicalHistoryDisplay = (metadataObj, language) => {
   return (
@@ -47,19 +48,14 @@ export const MedicalHistoryDisplay = (metadataObj, language) => {
 type Props = NativeStackScreenProps<RootStackParamList, 'MedicalHistory'>;
 
 const MedicalHistory = (props: Props) => {
-  const {
-    patientId,
-    visitId,
-    userName,
-    language: lng = 'en',
-  } = props.route.params;
+  const {language} = useLanguageStore();
+  const {patientId, visitId, userName} = props.route.params;
 
   const [allergies, setAllergies] = useState(null);
   const [surgeryHx, setSurgeryHx] = useState(null);
   const [chronicConditions, setChronicConditions] = useState(null);
   const [currentMedications, setCurrentMedications] = useState(null);
   const [vaccinations, setVaccinations] = useState(null);
-  const [language, setLanguage] = useState(lng);
 
   useEffect(() => {
     database
@@ -93,19 +89,17 @@ const MedicalHistory = (props: Props) => {
         }),
       })
       .then(() => {
-        props.navigation.navigate('NewVisit', {visitId, language, userName});
+        props.navigation.navigate('NewVisit', {visitId, userName});
       });
   };
 
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <View style={styles.containerLeft}>
-        {Header({
+        <Header
           // action: () => props.navigation.navigate('NewVisit', {language}),
-          action: () => props.navigation.goBack(), //.navigate('NewVisit', {language}),
-          language,
-          setLanguage,
-        })}
+          action={() => props.navigation.goBack()}
+        />
 
         <View
           style={{

@@ -7,28 +7,25 @@ import {LocalizedStrings} from '../enums/LocalizedStrings';
 import Header from './shared/Header';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/RootNavigation';
+import {useLanguageStore} from '../stores/language';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EditOpenTextEvent'>;
 
 const EditOpenTextEvent = (props: Props) => {
-  const {language: lng = 'en', event} = props.route.params;
+  const {language} = useLanguageStore();
+  const {event} = props.route.params;
 
-  const [language, setLanguage] = useState(lng);
   const [responseText, setResponseText] = useState(event.event_metadata);
 
   const editEvent = async () => {
     database.editEvent(event.id, responseText).then((response) => {
-      props.navigation.navigate('EventList', {events: response, language});
+      props.navigation.navigate('EventList', {events: response});
     });
   };
 
   return (
     <View style={styles.container}>
-      {Header({
-        action: () => props.navigation.navigate('EventList', {language}),
-        language,
-        setLanguage,
-      })}
+      <Header action={() => props.navigation.navigate('EventList', {})} />
       <Text style={[styles.text, {fontSize: 16, fontWeight: 'bold'}]}>
         {event.event_type}
       </Text>

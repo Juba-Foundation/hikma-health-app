@@ -16,14 +16,15 @@ import {EventTypes} from '../enums/EventTypes';
 import Header from './shared/Header';
 import {RootStackParamList} from '../navigation/RootNavigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useLanguageStore} from '../stores/language';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OpenTextEvent'>;
 
 const OpenTextEvent = (props: Props) => {
+  const {language} = useLanguageStore();
   const {route} = props;
-  const {eventType, patientId, visitId, language: lng = 'en'} = route.params;
+  const {eventType, patientId, visitId} = route.params;
 
-  const [language, setLanguage] = useState(lng);
   const [textColor, setTextColor] = useState('#A9A9A9');
   const [responseText, setResponseText] = useState('');
 
@@ -50,17 +51,12 @@ const OpenTextEvent = (props: Props) => {
         event_type: eventType,
         event_metadata: responseText,
       })
-      .then(() => props.navigation.navigate('NewVisit', {language, visitId}));
+      .then(() => props.navigation.navigate('NewVisit', {visitId}));
   };
 
   return (
     <View style={styles.container}>
-      {Header({
-        action: () =>
-          props.navigation.navigate('NewVisit', {language, visitId}),
-        language,
-        setLanguage,
-      })}
+      <Header action={() => props.navigation.navigate('NewVisit', {visitId})} />
 
       <Text style={[styles.text, {fontSize: 16, fontWeight: 'bold'}]}>
         {eventType}

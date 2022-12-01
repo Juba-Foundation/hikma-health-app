@@ -10,17 +10,13 @@ import {ExaminationDisplay} from './Examination';
 import Header from './shared/Header';
 import {RootStackParamList} from '../navigation/RootNavigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useLanguageStore} from '../stores/language';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SnapshotList'>;
 
 const SnapshotList = (props: Props) => {
-  const {
-    patient,
-    eventType,
-    language: lng = 'en',
-    events = [],
-  } = props.route.params;
-  const [language, setLanguage] = useState(lng);
+  const {language} = useLanguageStore();
+  const {patient, eventType, events = []} = props.route.params;
 
   const [list, setList] = useState(events);
 
@@ -31,7 +27,7 @@ const SnapshotList = (props: Props) => {
       });
       setList(filteredEvents);
     });
-  }, [props, language]);
+  }, [props]);
 
   const keyExtractor = (item, index) => index.toString();
 
@@ -107,15 +103,13 @@ const SnapshotList = (props: Props) => {
 
   return (
     <View style={styles.main}>
-      {Header({
-        action: () =>
+      <Header
+        action={() =>
           props.navigation.navigate('PatientView', {
-            language: language,
             patient: patient,
-          }),
-        language,
-        setLanguage,
-      })}
+          })
+        }
+      />
       <View style={styles.listContainer}>
         <View style={styles.scroll}>
           <FlatList

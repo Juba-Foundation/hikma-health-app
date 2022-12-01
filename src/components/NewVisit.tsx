@@ -12,22 +12,17 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/RootNavigation';
 import {CustomDatePicker} from './shared/CustomDatePicker';
 import DatePicker from 'react-native-datepicker';
+import {useLanguageStore} from '../stores/language';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NewVisit'>;
 
 const NewVisit = (props: Props) => {
-  const {
-    language: lng = 'en',
-    patient,
-    visitId,
-    userName,
-    existingVisit,
-  } = props.route?.params || {};
+  const {language} = useLanguageStore();
+  const {patient, visitId, userName, existingVisit} = props.route?.params || {};
   const [visitType, setVisitType] = useState('');
   const [visitDate, setVisitDate] = useState(
     new Date().toISOString().split('T')[0],
   );
-  const [language, setLanguage] = useState(lng);
   const [typeTextColor, setTypeTextColor] = useState('#A9A9A9');
 
   const today = new Date();
@@ -43,28 +38,7 @@ const NewVisit = (props: Props) => {
           setVisitType(response);
         }
       });
-
-    // NOTE: Logic duplicated across many componentes.
-    // TODO: Abstract out?
-    if (
-      !!props.route.params.language &&
-      language !== props.route.params.language
-    ) {
-      setLanguage(props.route.params.language);
-    }
   }, [props]);
-
-  const LanguageToggle = () => {
-    return (
-      <Picker
-        selectedValue={language}
-        onValueChange={(value) => setLanguage(value)}
-        style={[styles.picker, {marginLeft: 10}]}>
-        <Picker.Item value="en" label="en" />
-        <Picker.Item value="ar" label="ar" />
-      </Picker>
-    );
-  };
 
   const openTextEvent = (eventType: string) => {
     props.navigation.navigate('OpenTextEvent', {
@@ -89,40 +63,17 @@ const NewVisit = (props: Props) => {
 
   return (
     <View style={styles.containerLeft}>
-      {Header({
-        action: () =>
+      <Header
+        action={() =>
           existingVisit
-            ? props.navigation.navigate('EventList', {language, patient})
-            : props.navigation.navigate('PatientView', {language, patient}),
-        language,
-        setLanguage,
-      })}
+            ? props.navigation.navigate('EventList', {patient})
+            : props.navigation.navigate('PatientView', {patient})
+        }
+      />
 
       {existingVisit ? null : (
         <View style={styles.inputsContainer}>
           <View style={styles.inputRow}>
-            {/* <DatePicker */}
-            {/*   style={styles.datePicker} */}
-            {/*   date={visitDate} */}
-            {/*   mode="date" */}
-            {/*   placeholder={LocalizedStrings[language].selectDob} */}
-            {/*   format="YYYY-MM-DD" */}
-            {/*   minDate="1900-05-01" */}
-            {/*   maxDate={today.toISOString().split('T')[0]} */}
-            {/*   confirmBtnText={LocalizedStrings[language].confirm} */}
-            {/*   cancelBtnText={LocalizedStrings[language].cancel} */}
-            {/*   customStyles={{ */}
-            {/*     dateInput: { */}
-            {/*       alignItems: 'flex-start', */}
-            {/*       borderWidth: 0, */}
-            {/*     }, */}
-            {/*   }} */}
-            {/*   androidMode="spinner" */}
-            {/*   onDateChange={(date) => { */}
-            {/*     setVisitDate(date); */}
-            {/*     database.editVisitDate(visitId, moment(date).toISOString()); */}
-            {/*   }} */}
-            {/* /> */}
             <CustomDatePicker
               date={new Date(visitDate)}
               onDateChange={(d) => {
@@ -185,7 +136,6 @@ const NewVisit = (props: Props) => {
               patientId: patient.id,
               visitId,
               userName,
-              language,
             })
           }>
           <View style={styles.actionIcon}>
@@ -208,7 +158,6 @@ const NewVisit = (props: Props) => {
               patientId: patient.id,
               visitId,
               userName,
-              language,
             })
           }>
           <View style={styles.actionIcon}>
@@ -228,7 +177,6 @@ const NewVisit = (props: Props) => {
               patientId: patient.id,
               visitId,
               userName,
-              language,
             })
           }>
           <View style={styles.actionIcon}>
@@ -248,7 +196,6 @@ const NewVisit = (props: Props) => {
               patientId: patient.id,
               visitId,
               userName,
-              language,
             })
           }>
           <View style={styles.actionIcon}>
@@ -294,7 +241,6 @@ const NewVisit = (props: Props) => {
           style={styles.actionButton}
           onPress={() =>
             props.navigation.navigate('Covid19Form', {
-              language,
               patient,
               visitId,
               userName,

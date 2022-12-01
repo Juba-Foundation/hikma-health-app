@@ -8,26 +8,22 @@ import {Visit} from '../types/Visit';
 import Header from './shared/Header';
 import {RootStackParamList} from '../navigation/RootNavigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useLanguageStore} from '../stores/language';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'VisitList'>;
 
 const VisitList = (props: Props) => {
-  const {patient, language: lng = 'en', userName} = props.route.params;
+  const {language} = useLanguageStore();
+  const {patient, userName} = props.route.params;
 
   const [list, setList] = useState<Visit[]>([]);
-  const [language, setLanguage] = useState(lng);
 
   useEffect(() => {
     database.getVisits(patient.id).then((visits) => {
       setList(visits);
     });
+    // FIXME: Why is this db call dependent on language?
   }, [props, language]);
-
-  useEffect(() => {
-    if (language !== props.route.params.language) {
-      setLanguage(props.route.params.language);
-    }
-  }, [props]);
 
   const keyExtractor = (item, index) => index.toString();
 
@@ -73,7 +69,6 @@ const VisitList = (props: Props) => {
       style={styles.card}
       onPress={() =>
         props.navigation.navigate('EventList', {
-          language,
           patient,
           userName,
           visit: item,
@@ -119,15 +114,13 @@ const VisitList = (props: Props) => {
 
   return (
     <View style={styles.main}>
-      {Header({
-        action: () =>
+      <Header
+        action={() =>
           props.navigation.navigate('PatientView', {
-            language: language,
             patient: patient,
-          }),
-        language,
-        setLanguage,
-      })}
+          })
+        }
+      />
       <View style={{flexDirection: 'row', justifyContent: 'center'}}>
         <Text style={styles.text}>
           {LocalizedStrings[language].visitHistory} ({list.length})

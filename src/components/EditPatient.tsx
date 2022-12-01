@@ -18,14 +18,15 @@ import {EventTypes} from '../enums/EventTypes';
 import Header from './shared/Header';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/RootNavigation';
+import {useLanguageStore} from '../stores/language';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EditPatient'>;
 
 const EditPatient = (props: Props) => {
   const route = props.route;
-  const {patient, language: lng = 'en'} = route.params;
+  const {language} = useLanguageStore();
+  const {patient} = route.params;
 
-  const [language, setLanguage] = useState(lng);
   const [givenNameText, setGivenNameText] = useState(
     !!route.params.patient.given_name
       ? route.params.patient.given_name.content[language]
@@ -198,11 +199,7 @@ const EditPatient = (props: Props) => {
 
   return (
     <View style={styles.container}>
-      {Header({
-        action: () => props.navigation.navigate('PatientView', {language}),
-        language,
-        setLanguage,
-      })}
+      <Header action={() => props.navigation.navigate('PatientView', {})} />
       <View style={styles.inputRow}>
         <TextInput
           style={styles.inputs}

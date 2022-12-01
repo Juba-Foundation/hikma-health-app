@@ -7,14 +7,15 @@ import {LocalizedStrings} from '../enums/LocalizedStrings';
 import Header from './shared/Header';
 import {RootStackParamList} from '../navigation/RootNavigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useLanguageStore} from '../stores/language';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EditVitals'>;
 
 const EditVitals = (props: Props) => {
-  const {event, language: lng = 'en'} = props.route.params;
+  const {language} = useLanguageStore();
+  const {event} = props.route.params;
   const metadata = event.event_metadata;
 
-  const [language, setLanguage] = useState(lng);
   const [heartRate, setHeartRate] = useState(null);
   const [systolic, setSystolic] = useState(null);
   const [diastolic, setDiastolic] = useState(null);
@@ -54,17 +55,13 @@ const EditVitals = (props: Props) => {
         }),
       )
       .then((response) =>
-        props.navigation.navigate('EventList', {events: response, language}),
+        props.navigation.navigate('EventList', {events: response}),
       );
   };
 
   return (
     <View style={styles.container}>
-      {Header({
-        action: () => props.navigation.navigate('EventList', {language}),
-        language,
-        setLanguage,
-      })}
+      <Header action={() => props.navigation.navigate('EventList', {})} />
       <Text style={[styles.text, {fontSize: 16, fontWeight: 'bold'}]}>
         {LocalizedStrings[language].vitals}
       </Text>

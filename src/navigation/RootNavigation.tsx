@@ -32,7 +32,6 @@ import {Visit} from '../types/Visit';
 export type RootStackParamList = {
   Login: undefined;
   PatientList: {
-    language: string; // "en" | "ar"
     clinicId: string;
     email: string;
     password: string;
@@ -41,28 +40,24 @@ export type RootStackParamList = {
     reloadPatientsToggle: boolean;
   };
   NewPatient: {
-    language: string;
+    reloadPatientsToggle: boolean;
   };
   PatientView: {
     clinicId: string;
     userId: string;
     patient: Patient;
-    language: string;
     reloadPatientsToggle: boolean;
   };
   EditPatient: {
-    language: string;
     patient: Patient;
   };
   NewVisit: {
-    language: string;
     patient: Patient;
     visitId: string;
     userName: string;
     existingVisit: boolean;
   };
   Covid19Form: {
-    language: string;
     patient: Patient;
     visitId: string;
   };
@@ -70,34 +65,27 @@ export type RootStackParamList = {
     eventType: string;
     patientId: string;
     visitId: string;
-    language: string;
   };
   EditOpenTextEvent: {
     event: Event;
-    language: string;
   };
   Vitals: {
     patientId: string;
     visitId: string;
-    language: string;
   };
   VisitList: {
     patient: Patient;
-    language: string;
     userName: string;
   };
   Examination: {
-    language: string;
     patientId: string;
     visitId: string;
     userName: string;
   };
   EditVitals: {
     event: Event;
-    language: string;
   };
   EventList: {
-    language: string;
     userName: string;
     patient: Patient;
     visit: Visit;
@@ -107,16 +95,13 @@ export type RootStackParamList = {
     patientId: string;
     visitId: string;
     userName: string;
-    language: string;
   };
   Physiotherapy: {
     patientId: string;
-    language: string;
     visitId: string;
     userName: string;
   };
   Medicine: {
-    language: string;
     patientId: string;
     visitId: string;
     userName: string;
@@ -124,23 +109,19 @@ export type RootStackParamList = {
   EditExamination: {
     event: Event;
     userName: string;
-    language: string;
   };
   EditMedicalHistory: {
     event: Event;
     userName: string;
-    language: string;
   };
   EditPhysiotherapy: undefined;
   EditMedicine: {
     event: Event;
     userName: string;
-    language: string;
   };
   SnapshotList: {
     patient: Patient;
     eventType: any;
-    language: string;
     events: Event[];
   };
 };

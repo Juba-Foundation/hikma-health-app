@@ -15,12 +15,13 @@ import radioButtons from './shared/RadioButtons';
 import Header from './shared/Header';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/RootNavigation';
+import {useLanguageStore} from '../stores/language';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EditExamination'>;
 
 const EditExamination = (props: Props) => {
-  const {event, userName, language: lng = 'en'} = props.route.params;
-  const [language, setLanguage] = useState(lng);
+  const {language} = useLanguageStore();
+  const {event, userName} = props.route.params;
 
   const [examination, setExamination] = useState(null);
   const [generalObservations, setGeneralObservations] = useState(null);
@@ -59,18 +60,14 @@ const EditExamination = (props: Props) => {
         }),
       )
       .then((response) =>
-        props.navigation.navigate('EventList', {events: response, language}),
+        props.navigation.navigate('EventList', {events: response}),
       );
   };
 
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <View style={styles.containerLeft}>
-        {Header({
-          action: () => props.navigation.navigate('EventList', {language}),
-          language,
-          setLanguage,
-        })}
+        <Header action={() => props.navigation.navigate('EventList', {})} />
 
         <View
           style={{

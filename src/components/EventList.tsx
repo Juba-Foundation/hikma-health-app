@@ -15,20 +15,15 @@ import {PhysiotherapyDisplay} from './Physiotherapy';
 import Header from './shared/Header';
 import {RootStackParamList} from '../navigation/RootNavigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useLanguageStore} from '../stores/language';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EventList'>;
 
 const EventList = (props: Props) => {
-  const {
-    language: lng = 'en',
-    visit,
-    patient,
-    userName,
-    events = [],
-  } = props.route.params;
+  const {language} = useLanguageStore();
+  const {visit, patient, userName, events = []} = props.route.params;
 
   const [list, setList] = useState(events);
-  const [language, setLanguage] = useState(lng);
 
   useEffect(() => {
     if (visit) {
@@ -41,18 +36,12 @@ const EventList = (props: Props) => {
     }
   }, [props, language]);
 
-  useEffect(() => {
-    if (language !== props.route.params.language) {
-      setLanguage(props.route.params.language);
-    }
-  }, [props]);
-
   const keyExtractor = (item, index) => index.toString();
 
   const editEvent = (event: Event) => {
     switch (event.event_type) {
       case EventTypes.Vitals:
-        props.navigation.navigate('EditVitals', {event, language, userName});
+        props.navigation.navigate('EditVitals', {event, userName});
         break;
       case EventTypes.ExaminationFull:
         props.navigation.navigate('EditExamination', {
@@ -74,14 +63,13 @@ const EventList = (props: Props) => {
       case EventTypes.Physiotherapy:
         props.navigation.navigate('EditPhysiotherapy', {
           event,
-          language,
           userName,
         });
         break;
       case EventTypes.Complaint:
       case EventTypes.DentalTreatment:
       case EventTypes.Notes:
-        props.navigation.navigate('EditOpenTextEvent', {event, language});
+        props.navigation.navigate('EditOpenTextEvent', {event});
       default:
         break;
     }
@@ -158,15 +146,14 @@ const EventList = (props: Props) => {
 
   return (
     <View style={styles.main}>
-      {Header({
-        action: () =>
+      <Header
+        action={() =>
           props.navigation.navigate('VisitList', {
-            language: language,
             patient: patient,
-          }),
-        language,
-        setLanguage,
-      })}
+            userName,
+          })
+        }
+      />
       <View style={{flexDirection: 'row', justifyContent: 'center'}}>
         <Text style={styles.text}>
           {visit?.check_in_timestamp?.split('T')[0]} ({list.length})
@@ -187,7 +174,6 @@ const EventList = (props: Props) => {
           color={'#F77824'}
           onPress={() => {
             props.navigation.navigate('NewVisit', {
-              language: language,
               patient: patient,
               visitId: visit.id,
               userName: userName,

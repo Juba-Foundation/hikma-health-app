@@ -17,6 +17,7 @@ import {LocalizedStrings} from '../enums/LocalizedStrings';
 import Header from './shared/Header';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/RootNavigation';
+import {useLanguageStore} from '../stores/language';
 
 export const MedicineType = (value, action, language) => {
   return (
@@ -94,17 +95,13 @@ export const MedicineDisplay = (metadataObj, language) => {
 type Props = NativeStackScreenProps<RootStackParamList, 'Medicine'>;
 
 const Medicine = (props: Props) => {
-  const {
-    language: lng = 'en',
-    patientId,
-    visitId,
-    userName,
-  } = props.route.params;
+  const {language} = useLanguageStore();
+
+  const {patientId, visitId, userName} = props.route.params;
   const [medication, setMedication] = useState(null);
   const [type, setType] = useState(null);
   const [dosage, setDosage] = useState(null);
   const [days, setDays] = useState(null);
-  const [language, setLanguage] = useState(lng);
 
   const submit = async () => {
     database
@@ -122,18 +119,14 @@ const Medicine = (props: Props) => {
         }),
       })
       .then(() => {
-        props.navigation.navigate('NewVisit', {language, visitId, userName});
+        props.navigation.navigate('NewVisit', {visitId, userName});
       });
   };
 
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <View style={styles.containerLeft}>
-        {Header({
-          action: () => props.navigation.navigate('NewVisit', {language}),
-          language,
-          setLanguage,
-        })}
+        <Header action={() => props.navigation.navigate('NewVisit', {})} />
 
         <View
           style={{

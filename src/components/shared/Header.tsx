@@ -1,10 +1,18 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import styles from '../Style';
 import {LocalizedStrings} from '../../enums/LocalizedStrings';
 import LanguageToggle from './LanguageToggle';
+import {useLanguageStore} from '../../stores/language';
 
-const Header = (props) => {
+type HeaderProps = {
+  action: () => void;
+};
+
+// TODO: Is it necessary to pass the "back" action if its always poping the navigation stack?
+
+const Header: FC<HeaderProps> = (props) => {
+  const {language} = useLanguageStore();
   return (
     <View style={[styles.searchBar, {display: 'flex', marginBottom: 10}]}>
       <View
@@ -16,7 +24,7 @@ const Header = (props) => {
         }}>
         <View style={[styles.card]}>
           <TouchableOpacity onPress={() => props.action()}>
-            <Text>{LocalizedStrings[props.language].back}</Text>
+            <Text>{LocalizedStrings[language].back}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -40,10 +48,7 @@ const Header = (props) => {
           display: 'flex',
           alignItems: 'center',
         }}>
-        {LanguageToggle({
-          language: props.language,
-          setLanguage: props.setLanguage,
-        })}
+        <LanguageToggle />
       </View>
     </View>
   );

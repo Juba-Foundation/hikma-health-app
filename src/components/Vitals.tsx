@@ -9,6 +9,7 @@ import {LocalizedStrings} from '../enums/LocalizedStrings';
 import Header from './shared/Header';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/RootNavigation';
+import {useLanguageStore} from '../stores/language';
 
 export const VitalsDisplay = (metadataObj) => {
   return (
@@ -33,7 +34,8 @@ export const VitalsDisplay = (metadataObj) => {
 type Props = NativeStackScreenProps<RootStackParamList, 'Vitals'>;
 
 const Vitals = (props: Props) => {
-  const {patientId, visitId, language: lng = 'en'} = props.route.params;
+  const {language} = useLanguageStore();
+  const {patientId, visitId} = props.route.params;
   const [heartRate, setHeartRate] = useState(null);
   const [systolic, setSystolic] = useState(null);
   const [diastolic, setDiastolic] = useState(null);
@@ -42,7 +44,6 @@ const Vitals = (props: Props) => {
   const [respiratoryRate, setRespiratoryRate] = useState(null);
   const [weight, setWeight] = useState(null);
   const [bloodGlucose, setBloodGlucose] = useState(null);
-  const [language, setLanguage] = useState(lng);
 
   const setVitals = async () => {
     database
@@ -63,17 +64,13 @@ const Vitals = (props: Props) => {
         }),
       })
       .then(() => {
-        props.navigation.navigate('NewVisit', {language, visitId});
+        props.navigation.navigate('NewVisit', {visitId});
       });
   };
 
   return (
     <View style={styles.container}>
-      {Header({
-        action: () => props.navigation.navigate('NewVisit', {language}),
-        language,
-        setLanguage,
-      })}
+      <Header action={() => props.navigation.navigate('NewVisit', {})} />
       <Text style={[styles.text, {fontSize: 16, fontWeight: 'bold'}]}>
         {LocalizedStrings[language].vitals}
       </Text>

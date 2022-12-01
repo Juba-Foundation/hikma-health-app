@@ -15,13 +15,14 @@ import {MedicineType} from './Medicine';
 import Header from './shared/Header';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/RootNavigation';
+import {useLanguageStore} from '../stores/language';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EditMedicine'>;
 
 const EditMedicine = (props: Props) => {
-  const {event, userName, language: lng = 'en'} = props.route.params;
+  const {language} = useLanguageStore();
+  const {event, userName} = props.route.params;
 
-  const [language, setLanguage] = useState(lng);
   const [medication, setMedication] = useState(null);
   const [type, setType] = useState(null);
   const [dosage, setDosage] = useState(null);
@@ -50,18 +51,14 @@ const EditMedicine = (props: Props) => {
         }),
       )
       .then((response) =>
-        props.navigation.navigate('EventList', {events: response, language}),
+        props.navigation.navigate('EventList', {events: response}),
       );
   };
 
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <View style={styles.containerLeft}>
-        {Header({
-          action: () => props.navigation.navigate('EventList', {language}),
-          language,
-          setLanguage,
-        })}
+        <Header action={() => props.navigation.navigate('EventList', {})} />
         <View
           style={{
             flexDirection: 'row',

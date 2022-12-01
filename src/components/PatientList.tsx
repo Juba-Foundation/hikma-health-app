@@ -22,18 +22,13 @@ import UserAvatar from 'react-native-user-avatar';
 import LanguageToggle from './shared/LanguageToggle';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/RootNavigation';
+import {useLanguageStore} from '../stores/language';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PatientList'>;
 
 const PatientList = (props: Props) => {
   const databaseSync: DatabaseSync = new DatabaseSync();
-  const {
-    email,
-    password,
-    clinicId,
-    instanceUrl,
-    language: lng = 'en',
-  } = props.route.params;
+  const {email, password, clinicId, instanceUrl} = props.route.params;
   const [userId, setUserId] = useState(props.route.params.userId);
   const [list, setList] = useState([]);
   const [patientCount, setPatientCount] = useState(0);
@@ -47,22 +42,14 @@ const PatientList = (props: Props) => {
   const [maxAge, setMaxAge] = useState<number>(0);
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [language, setLanguage] = useState(lng);
   const [searchIconFunction, setSearchIconFunction] = useState(false);
   const search = useRef(null);
+
+  const {language} = useLanguageStore();
 
   useEffect(() => {
     searchPatients();
   }, [props.route.params.reloadPatientsToggle, language]);
-
-  useEffect(() => {
-    if (
-      !!props.route.params.language &&
-      language !== props.route.params.language
-    ) {
-      setLanguage(props.route.params.language);
-    }
-  }, [props]);
 
   const keyExtractor = (item, index) => index.toString();
 
@@ -221,7 +208,7 @@ const PatientList = (props: Props) => {
             </TouchableOpacity>
           </View>
 
-          {LanguageToggle({language, setLanguage})}
+          <LanguageToggle />
           <TouchableOpacity
             onPress={async () => {
               await databaseSync.performSync(

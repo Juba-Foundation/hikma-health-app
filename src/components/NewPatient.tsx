@@ -21,6 +21,7 @@ import {CustomDatePicker} from './shared/CustomDatePicker';
 import moment from 'moment';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/RootNavigation';
+import {useLanguageStore} from '../stores/language';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NewPatient'>;
 
@@ -33,6 +34,8 @@ const DEFAULT_DOB = (() => {
 })();
 
 const NewPatient = (props: Props) => {
+  const {language} = useLanguageStore();
+
   const [givenName, setGivenName] = useState('');
   const [surname, setSurname] = useState('');
   const [dob, setDob] = useState(DEFAULT_DOB);
@@ -40,9 +43,6 @@ const NewPatient = (props: Props) => {
   const [country, setCountry] = useState('');
   const [hometown, setHometown] = useState('');
   const [phone, setPhone] = useState('');
-  const [language, setLanguage] = useState(
-    props.route?.params?.language || 'en',
-  );
   const [camp, setCamp] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -100,7 +100,6 @@ const NewPatient = (props: Props) => {
         }
         props.navigation.navigate('PatientList', {
           reloadPatientsToggle: !props.route?.params?.reloadPatientsToggle,
-          language: language,
         });
       });
     } catch (error) {
@@ -121,11 +120,7 @@ const NewPatient = (props: Props) => {
 
   return (
     <View style={styles.container}>
-      {Header({
-        action: () => props.navigation.navigate('PatientList', {language}),
-        language,
-        setLanguage,
-      })}
+      <Header action={() => props.navigation.navigate('PatientList', {})} />
       <View style={styles.inputRow}>
         <TextInput
           style={styles.inputs}
@@ -143,28 +138,7 @@ const NewPatient = (props: Props) => {
         />
       </View>
       <View style={styles.inputRow}>
-        {/* <DatePicker */}
-        {/*   style={styles.datePicker} */}
-        {/*   date={dob} */}
-        {/*   mode="date" */}
-        {/*   placeholder={LocalizedStrings[language].selectDob} */}
-        {/*   format="YYYY-MM-DD" */}
-        {/*   minDate="1900-05-01" */}
-        {/*   maxDate={today.toISOString().split('T')[0]} */}
-        {/*   confirmBtnText={LocalizedStrings[language].confirm} */}
-        {/*   cancelBtnText={LocalizedStrings[language].cancel} */}
-        {/*   customStyles={{ */}
-        {/*     dateInput: { */}
-        {/*       alignItems: 'flex-start', */}
-        {/*       borderWidth: 0, */}
-        {/*     }, */}
-        {/*   }} */}
-        {/*   androidMode="spinner" */}
-        {/*   onDateChange={(date) => setDob(date)} */}
-        {/* /> */}
-
         <CustomDatePicker date={dob} onDateChange={setDob} />
-
         <View>
           <Text style={[{color: '#FFFFFF'}]}>
             {LocalizedStrings[language].gender}

@@ -17,6 +17,7 @@ import DatePicker from 'react-native-datepicker';
 import Header from './shared/Header';
 import {RootStackParamList} from '../navigation/RootNavigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useLanguageStore} from '../stores/language';
 
 const formatResult = (metadataObj, language) => {
   if (metadataObj.seekCare) {
@@ -181,7 +182,8 @@ export const Covid19Display = (metadataObj, language) => {
 type Props = NativeStackScreenProps<RootStackParamList, 'Covid19Form'>;
 
 const Covid19Form = (props: Props) => {
-  const {language: lng = 'en', patient, visitId} = props.route.params;
+  const {language} = useLanguageStore();
+  const {patient, visitId} = props.route.params;
   const [fever, setFever] = useState(null);
   //lower resp
   const [dryCough, setDryCough] = useState(null);
@@ -214,8 +216,6 @@ const Covid19Form = (props: Props) => {
   const [submitted, setSubmitted] = useState(null);
 
   const [isCollapsed, setIsCollapsed] = useState(true);
-
-  const [language, setLanguage] = useState(lng);
 
   const result = () => {
     if (emergencyResult()) {
@@ -339,11 +339,7 @@ const Covid19Form = (props: Props) => {
   return !submitted ? (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <View style={[styles.containerLeft]}>
-        {Header({
-          action: () => props.navigation.navigate('NewVisit', {language}),
-          language,
-          setLanguage,
-        })}
+        <Header action={() => props.navigation.navigate('NewVisit', {})} />
         <View
           style={{
             flexDirection: 'row',
@@ -592,7 +588,7 @@ const Covid19Form = (props: Props) => {
       <View style={styles.searchBar}>
         <TouchableOpacity
           onPress={() => {
-            props.navigation.navigate('NewVisit', {language: language});
+            props.navigation.navigate('NewVisit', {});
           }}>
           <Text style={styles.text}>{LocalizedStrings[language].back}</Text>
         </TouchableOpacity>
