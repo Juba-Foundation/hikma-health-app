@@ -35,8 +35,7 @@ Once added, click the green play button action on the right of the list to launc
 
 in the android/app/ directory: 
 ```
-keytool -genkey -v -keystore debug.keystore
-  -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000
+keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000
 ```
 
 If the debug.keystore file gets generated in the build directory, move it to the android/app directory.

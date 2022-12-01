@@ -1,12 +1,16 @@
-import { StyleSheet } from 'react-native';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { Platform } from 'react-native';
+import {StyleSheet, Appearance} from 'react-native';
+
+import {getStatusBarHeight} from 'react-native-status-bar-height';
+import {Platform} from 'react-native';
+
+const colorScheme = Appearance.getColorScheme();
+
 export default StyleSheet.create({
   loginContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: "#3A539B",
+    backgroundColor: '#3A539B',
   },
   loginInputsContainer: {
     padding: 10,
@@ -24,7 +28,7 @@ export default StyleSheet.create({
     height: 40,
     borderRadius: 12,
     borderColor: '#EAEAEA',
-    borderWidth: .5,
+    borderWidth: 0.5,
   },
   loginInputsFailed: {
     margin: 10,
@@ -46,7 +50,7 @@ export default StyleSheet.create({
   logo: {
     width: 110,
     height: 140,
-    resizeMode: 'stretch'
+    resizeMode: 'stretch',
   },
   container: {
     paddingTop: Platform.OS === 'ios' ? getStatusBarHeight() : 0,
@@ -54,14 +58,14 @@ export default StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     flex: 1,
-    backgroundColor: "#3A539B",
+    backgroundColor: '#3A539B',
   },
   containerLeft: {
     paddingTop: Platform.OS === 'ios' ? getStatusBarHeight() : 0,
     paddingBottom: 20,
     justifyContent: 'flex-start',
     flex: 1,
-    backgroundColor: "#3A539B",
+    backgroundColor: '#3A539B',
   },
   inputsContainer: {
     flex: 1,
@@ -77,7 +81,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
-    padding: 10
+    padding: 10,
   },
   inputs: {
     backgroundColor: '#FFFFFF',
@@ -86,11 +90,11 @@ export default StyleSheet.create({
     height: 40,
     borderRadius: 12,
     borderColor: '#EAEAEA',
-    borderWidth: .5,
+    borderWidth: 0.5,
     width: '100%',
     flex: 1,
     elevation: 5,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -100,32 +104,32 @@ export default StyleSheet.create({
   },
   text: {
     margin: 10,
-    color: '#FFFFFF'
+    color: '#FFFFFF',
   },
   main: {
-    backgroundColor: "#3A539B",
+    backgroundColor: '#3A539B',
     paddingTop: Platform.OS === 'ios' ? getStatusBarHeight() : 0,
     flex: 1,
   },
   listContainer: {
     flexDirection: 'column',
     flex: 1,
-    alignContent: 'flex-start'
+    alignContent: 'flex-start',
   },
   viewContainer: {
     backgroundColor: '#ededed',
     flexDirection: 'column',
     flex: 1,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   newVisit: {
     padding: 20,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   scroll: {
     flex: 1,
-    height: 0
+    height: 0,
   },
   searchInput: {
     color: '#FFFFFF',
@@ -136,7 +140,7 @@ export default StyleSheet.create({
     margin: 10,
     padding: 10,
     height: 'auto',
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -145,9 +149,9 @@ export default StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     borderColor: '#EAEAEA',
-    borderWidth: .5,
+    borderWidth: 0.5,
     borderRadius: 12,
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#FFFFFF',
   },
   editPatientButton: {
     margin: 10,
@@ -155,7 +159,7 @@ export default StyleSheet.create({
     paddingHorizontal: 10,
     height: 30,
     alignItems: 'center',
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -164,9 +168,9 @@ export default StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     borderColor: '#EAEAEA',
-    borderWidth: .5,
+    borderWidth: 0.5,
     borderRadius: 12,
-    backgroundColor: '#6177B7'
+    backgroundColor: '#6177B7',
   },
   actionButton: {
     flexDirection: 'column',
@@ -178,11 +182,11 @@ export default StyleSheet.create({
     height: 100,
     borderRadius: 12,
     borderColor: '#EAEAEA',
-    borderWidth: .5,
+    borderWidth: 0.5,
     width: '100%',
     flex: 1,
     elevation: 5,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -191,12 +195,12 @@ export default StyleSheet.create({
     shadowRadius: 3.84,
   },
   actionText: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   actionIcon: {
     flexDirection: 'column',
     justifyContent: 'center',
-    flex: 1
+    flex: 1,
   },
   button: {
     margin: 10,
@@ -209,7 +213,7 @@ export default StyleSheet.create({
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '70%'
+    width: '70%',
   },
   profileButton: {
     flex: 1,
@@ -220,9 +224,9 @@ export default StyleSheet.create({
     alignItems: 'center',
     elevation: 5,
     borderColor: '#EAEAEA',
-    borderWidth: .5,
+    borderWidth: 0.5,
     borderRadius: 12,
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#FFFFFF',
   },
   searchBar: {
     marginTop: 10,
@@ -237,7 +241,7 @@ export default StyleSheet.create({
     marginTop: 10,
     marginHorizontal: 10,
     flexDirection: 'row',
-    justifyContent: "flex-start",
+    justifyContent: 'flex-start',
     width: '100%',
     height: 50,
   },
@@ -260,7 +264,7 @@ export default StyleSheet.create({
     borderWidth: 1,
     height: 120,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   gridItemText: {
     fontSize: 18,
@@ -276,14 +280,14 @@ export default StyleSheet.create({
     flexDirection: 'row',
     textAlign: 'center',
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
   paragraph: {
-    lineHeight: 20
+    lineHeight: 20,
   },
   title: {
     marginHorizontal: 20,
-    marginTop: 20
+    marginTop: 20,
   },
   outerRadioButton: {
     height: 24,
@@ -293,7 +297,7 @@ export default StyleSheet.create({
     borderColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: 5
+    marginHorizontal: 5,
   },
   selectedRadioButton: {
     height: 12,
@@ -308,11 +312,11 @@ export default StyleSheet.create({
     height: 40,
     borderRadius: 12,
     borderColor: '#EAEAEA',
-    borderWidth: .5,
+    borderWidth: 0.5,
     width: '100%',
     flex: 1,
     elevation: 5,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -323,37 +327,37 @@ export default StyleSheet.create({
   picker: {
     color: '#FFFFFF',
     height: 50,
-    width: 90
+    width: 90,
   },
   centeredView: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
   },
   leftView: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   modalView: {
     margin: 8,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 20,
     padding: 45,
-    alignItems: "center",
-    shadowColor: "#000",
+    alignItems: 'center',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    display: 'flex'
+    display: 'flex',
   },
   modalText: {
     marginBottom: 15,
-    textAlign: "center",
-    fontWeight: 'bold'
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });

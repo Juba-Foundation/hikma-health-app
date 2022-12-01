@@ -9,23 +9,30 @@ import { User } from "../types/User";
 import { LocalizedStrings } from "../enums/LocalizedStrings";
 import UserAvatar from 'react-native-user-avatar';
 import Header from "./shared/Header";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../navigation/RootNavigation";
 
-const PatientView = (props) => {
+type Props = NativeStackScreenProps<RootStackParamList, 'PatientView'>;
 
-  const [patient, setPatient] = useState(props.navigation.getParam('patient'));
-  const [language, setLanguage] = useState(props.navigation.getParam('language', 'en'));
+const PatientView = (props: Props) => {
+  const params = props.route.params || { language: "en" }
+
+  const [patient, setPatient] = useState(params.patient);
+  const [language, setLanguage] = useState(params.language);
   const [isEditingSummary, setIsEditingSummary] = useState(false);
   const [userName, setUserName] = useState('');
-  const [summary, setSummary] = useState(LocalizedStrings[(props.navigation.getParam('language', 'en'))].noContent)
+  const [summary, setSummary] = useState(LocalizedStrings[params.language].noContent)
   const [isCollapsed, setIsCollapsed] = useState(true)
-  const clinicId = props.navigation.state.params.clinicId;
-  const userId = props.navigation.state.params.userId;
+  const clinicId = params.clinicId;
+  const userId = params.userId;
   const name1 = 'This'
   const name2 = 'Guy'
 
+  const reloadPatientsToggle = params.reloadPatientsToggle || false
+
   useEffect(() => {
-    setPatient(props.navigation.state.params.patient);
-    let patientId = props.navigation.state.params.patient.id
+    setPatient(props.route.params.patient);
+    let patientId = props.route.params.patient.id
     database.getLatestPatientEventByType(patientId, EventTypes.PatientSummary).then((response: string) => {
       if (response.length > 0) {
         setSummary(response)
@@ -36,8 +43,8 @@ const PatientView = (props) => {
   }, [props, language])
 
   useEffect(() => {
-    if (language !== props.navigation.getParam('language')) {
-      setLanguage(props.navigation.getParam('language'));
+    if (language !== props.route.params.language) {
+      setLanguage(props.route.params.language);
     }
   }, [props])
 
@@ -81,7 +88,7 @@ const PatientView = (props) => {
 
   return (
     <View style={[styles.main, { justifyContent: 'space-between' }]}>
-      {Header({ action: () => props.navigation.navigate('PatientList', { language: language, reloadPatientsToggle: !props.navigation.state.params.reloadPatientsToggle }), language, setLanguage })}
+      {Header({ action: () => props.navigation.navigate('PatientList', { language: language, reloadPatientsToggle: !reloadPatientsToggle }), language, setLanguage })}
       <View style={[styles.card, { flex: 1, elevation: 0 }]}>
         <View style={[styles.cardContent, { alignItems: 'flex-start' }]}>
 

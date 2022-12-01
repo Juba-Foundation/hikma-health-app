@@ -1,17 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
-  View, Text, TextInput, ScrollView, Button, TouchableOpacity
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  Button,
+  TouchableOpacity,
 } from 'react-native';
 
-import { database } from "../storage/Database";
+import {database} from '../storage/Database';
 import styles from './Style';
-import { LocalizedStrings } from '../enums/LocalizedStrings';
+import {LocalizedStrings} from '../enums/LocalizedStrings';
 import Header from './shared/Header';
+import {RootStackParamList} from '../navigation/RootNavigation';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-const EditMedicalHistory = (props) => {
-  const event = props.navigation.getParam('event');
-  const userName = props.navigation.getParam('userName');
-  const [language, setLanguage] = useState(props.navigation.getParam('language', 'en'));
+type Props = NativeStackScreenProps<RootStackParamList, 'EditMedicalHistory'>;
+
+const EditMedicalHistory = (props: Props) => {
+  const {event, userName, language: lng = 'en'} = props.route.params;
+  const [language, setLanguage] = useState(lng);
 
   const [allergies, setAllergies] = useState(null);
   const [surgeryHx, setSurgeryHx] = useState(null);
@@ -21,94 +29,121 @@ const EditMedicalHistory = (props) => {
 
   useEffect(() => {
     if (!!event.event_metadata) {
-      const metadataObj = JSON.parse(event.event_metadata)
-      setAllergies(metadataObj.allergies)
-      setSurgeryHx(metadataObj.surgeryHx)
-      setChronicConditions(metadataObj.chronicConditions)
-      setCurrentMedications(metadataObj.currentMedications)
-      setVaccinations(metadataObj.vaccinations)
+      const metadataObj = JSON.parse(event.event_metadata);
+      setAllergies(metadataObj.allergies);
+      setSurgeryHx(metadataObj.surgeryHx);
+      setChronicConditions(metadataObj.chronicConditions);
+      setCurrentMedications(metadataObj.currentMedications);
+      setVaccinations(metadataObj.vaccinations);
     }
-  }, [props])
+  }, [props]);
 
   const submit = async () => {
-    database.editEvent(
-      event.id,
-      JSON.stringify({
-        doctor: userName,
-        allergies,
-        surgeryHx,
-        chronicConditions,
-        currentMedications,
-        vaccinations,
-      })
-    ).then((response) => props.navigation.navigate('EventList', { events: response, language }))
+    database
+      .editEvent(
+        event.id,
+        JSON.stringify({
+          doctor: userName,
+          allergies,
+          surgeryHx,
+          chronicConditions,
+          currentMedications,
+          vaccinations,
+        }),
+      )
+      .then((response) =>
+        props.navigation.navigate('EventList', {events: response, language}),
+      );
   };
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <View style={styles.containerLeft}>
-        {Header({ action: () => props.navigation.navigate('EventList', { language }), language, setLanguage })}
-        <View style={{ flexDirection: 'row', justifyContent: 'center', alignSelf: 'stretch', }}>
-          <Text style={[styles.text, { fontSize: 16, fontWeight: 'bold' }]}>{LocalizedStrings[language].medicalHistory}</Text>
+        {Header({
+          action: () => props.navigation.navigate('EventList', {language}),
+          language,
+          setLanguage,
+        })}
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignSelf: 'stretch',
+          }}>
+          <Text style={[styles.text, {fontSize: 16, fontWeight: 'bold'}]}>
+            {LocalizedStrings[language].medicalHistory}
+          </Text>
         </View>
-        <View style={[styles.responseRow, { paddingBottom: 0 }]}>
-          <Text style={{ color: '#FFFFFF' }}>{LocalizedStrings[language].allergies}</Text>
+        <View style={[styles.responseRow, {paddingBottom: 0}]}>
+          <Text style={{color: '#FFFFFF'}}>
+            {LocalizedStrings[language].allergies}
+          </Text>
         </View>
-        <View style={[styles.responseRow, { padding: 0 }]}>
+        <View style={[styles.responseRow, {padding: 0}]}>
           <TextInput
             style={styles.inputs}
             onChangeText={(text) => setAllergies(text)}
             value={allergies}
           />
         </View>
-        <View style={[styles.responseRow, { paddingVertical: 0 }]}>
-          <Text style={{ color: '#FFFFFF' }}>{LocalizedStrings[language].surgeryHx}</Text>
+        <View style={[styles.responseRow, {paddingVertical: 0}]}>
+          <Text style={{color: '#FFFFFF'}}>
+            {LocalizedStrings[language].surgeryHx}
+          </Text>
         </View>
-        <View style={[styles.responseRow, { padding: 0 }]}>
+        <View style={[styles.responseRow, {padding: 0}]}>
           <TextInput
             style={styles.inputs}
             onChangeText={(text) => setSurgeryHx(text)}
             value={surgeryHx}
           />
         </View>
-        <View style={[styles.responseRow, { paddingVertical: 0 }]}>
-          <Text style={{ color: '#FFFFFF' }}>{LocalizedStrings[language].chronicConditions}</Text>
+        <View style={[styles.responseRow, {paddingVertical: 0}]}>
+          <Text style={{color: '#FFFFFF'}}>
+            {LocalizedStrings[language].chronicConditions}
+          </Text>
         </View>
-        <View style={[styles.responseRow, { padding: 0 }]}>
+        <View style={[styles.responseRow, {padding: 0}]}>
           <TextInput
             style={styles.inputs}
             onChangeText={(text) => setChronicConditions(text)}
             value={chronicConditions}
           />
         </View>
-        <View style={[styles.responseRow, { paddingVertical: 0 }]}>
-          <Text style={{ color: '#FFFFFF' }}>{LocalizedStrings[language].currentMedications}</Text>
+        <View style={[styles.responseRow, {paddingVertical: 0}]}>
+          <Text style={{color: '#FFFFFF'}}>
+            {LocalizedStrings[language].currentMedications}
+          </Text>
         </View>
-        <View style={[styles.responseRow, { padding: 0 }]}>
+        <View style={[styles.responseRow, {padding: 0}]}>
           <TextInput
             style={styles.inputs}
             onChangeText={(text) => setCurrentMedications(text)}
             value={currentMedications}
           />
         </View>
-        <View style={[styles.responseRow, { paddingVertical: 0 }]}>
-          <Text style={{ color: '#FFFFFF' }}>{LocalizedStrings[language].vaccinations}</Text>
+        <View style={[styles.responseRow, {paddingVertical: 0}]}>
+          <Text style={{color: '#FFFFFF'}}>
+            {LocalizedStrings[language].vaccinations}
+          </Text>
         </View>
-        <View style={[styles.responseRow, { paddingTop: 0, paddingHorizontal: 0 }]}>
+        <View
+          style={[styles.responseRow, {paddingTop: 0, paddingHorizontal: 0}]}>
           <TextInput
             style={styles.inputs}
             onChangeText={(text) => setVaccinations(text)}
             value={vaccinations}
           />
         </View>
-        <View style={{ alignItems: 'center' }}>
+        <View style={{alignItems: 'center'}}>
           <Button
             title={LocalizedStrings[language].save}
             color={'#F77824'}
-            onPress={() => submit()} />
+            onPress={() => submit()}
+          />
         </View>
       </View>
-    </ScrollView >
+    </ScrollView>
   );
 };
 
