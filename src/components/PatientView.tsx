@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Button,
+  ScrollView,
 } from 'react-native';
 import {database} from '../storage/Database';
 import styles from './Style';
@@ -109,224 +110,237 @@ const PatientView = (props: Props) => {
   };
 
   return (
-    <View style={[styles.main, {justifyContent: 'space-between'}]}>
-      <Header
-        action={() =>
-          props.navigation.navigate('PatientList', {
-            reloadPatientsToggle: !reloadPatientsToggle,
-          })
-        }
-      />
-      <View style={[styles.card, {flex: 1, elevation: 0}]}>
-        <View style={[styles.cardContent, {alignItems: 'flex-start'}]}>
-          <UserAvatar
-            size={100}
-            name={displayNameAvatar(patient)}
-            bgColor="#ECECEC"
-            textColor="#6177B7"
-          />
-          <View style={{marginLeft: 20, flex: 1}}>
-            <View style={{flex: 1}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flex: 1,
-                }}>
-                <Text style={styles.gridItemText}>{displayName(patient)}</Text>
-                <View style={[styles.editPatientButton]}>
-                  <TouchableOpacity
-                    onPress={() =>
-                      props.navigation.navigate('EditPatient', {
-                        patient: patient,
-                      })
-                    }>
-                    <Text style={{color: '#FFFFFF'}}>
-                      {LocalizedStrings[language].edit}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-            <View style={{flex: 1}}>
-              <Text>{`${LocalizedStrings[language].dob}:  ${patient.date_of_birth}`}</Text>
-              <Text>{`${LocalizedStrings[language].sex}:  ${patient.sex}`}</Text>
-              <Text>{`${LocalizedStrings[language].camp}:  ${patient.camp}`}</Text>
-            </View>
-
-            <View style={{flex: 1, marginBottom: 15}}>
-              <TouchableOpacity onLongPress={() => setIsEditingSummary(true)}>
-                {isEditingSummary ? (
-                  <View>
-                    <TextInput
-                      style={styles.paragraph}
-                      onChangeText={setSummary}
-                      value={summary}
-                    />
+    <ScrollView contentContainerStyle={{flexGrow: 1}}>
+      <View style={[styles.main, {justifyContent: 'space-between'}]}>
+        <Header
+          action={() =>
+            props.navigation.navigate('PatientList', {
+              reloadPatientsToggle: !reloadPatientsToggle,
+            })
+          }
+        />
+        <View style={[styles.card, {flex: 1, elevation: 0}]}>
+          <View style={[styles.cardContent, {alignItems: 'flex-start'}]}>
+            <UserAvatar
+              size={100}
+              name={displayNameAvatar(patient)}
+              bgColor="#ECECEC"
+              textColor="#6177B7"
+            />
+            <View style={{marginLeft: 20, flex: 1}}>
+              <View style={{flex: 1}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flex: 1,
+                  }}>
+                  <Text style={styles.gridItemText}>
+                    {displayName(patient)}
+                  </Text>
+                  <View style={[styles.editPatientButton]}>
                     <TouchableOpacity
-                      style={[styles.editPatientButton, {marginHorizontal: 0}]}
-                      onPress={() => {
-                        handleSaveSummary();
-                        setIsEditingSummary(false);
-                      }}>
-                      <View
-                        style={{
-                          flex: 1,
-                          flexDirection: 'row',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}>
-                        <Text style={{color: '#FFFFFF'}}>
-                          {LocalizedStrings[language].save}
-                        </Text>
-                      </View>
+                      onPress={() =>
+                        props.navigation.navigate('EditPatient', {
+                          patient: patient,
+                        })
+                      }>
+                      <Text style={{color: '#FFFFFF'}}>
+                        {LocalizedStrings[language].edit}
+                      </Text>
                     </TouchableOpacity>
                   </View>
-                ) : (
-                  <View>
-                    <Text style={[styles.gridItemText, {paddingBottom: 5}]}>
-                      {LocalizedStrings[language].patientSummary}
-                    </Text>
-                    <Text style={[styles.paragraph]}>{summary}</Text>
-                  </View>
-                )}
-              </TouchableOpacity>
+                </View>
+              </View>
+              <View style={{flex: 1}}>
+                <Text>{`${LocalizedStrings[language].serialNumber}:  ${patient.serial_number}`}</Text>
+                <Text>{`${LocalizedStrings[language].dob}:  ${patient.date_of_birth}`}</Text>
+                <Text>{`${LocalizedStrings[language].sex}:  ${patient.sex}`}</Text>
+                <Text>{`${LocalizedStrings[language].camp}:  ${patient.camp}`}</Text>
+                <Text>{`${LocalizedStrings[language].section}:  ${
+                  patient.section.content[
+                    Object.keys(patient.given_name.content)[0]
+                  ]
+                }`}</Text>
+              </View>
+
+              <View style={{flex: 1, marginBottom: 15}}>
+                <TouchableOpacity onLongPress={() => setIsEditingSummary(true)}>
+                  {isEditingSummary ? (
+                    <View>
+                      <TextInput
+                        style={styles.paragraph}
+                        onChangeText={setSummary}
+                        value={summary}
+                      />
+                      <TouchableOpacity
+                        style={[
+                          styles.editPatientButton,
+                          {marginHorizontal: 0},
+                        ]}
+                        onPress={() => {
+                          handleSaveSummary();
+                          setIsEditingSummary(false);
+                        }}>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}>
+                          <Text style={{color: '#FFFFFF'}}>
+                            {LocalizedStrings[language].save}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    <View>
+                      <Text style={[styles.gridItemText, {paddingBottom: 5}]}>
+                        {LocalizedStrings[language].patientSummary}
+                      </Text>
+                      <Text style={[styles.paragraph]}>{summary}</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
-      </View>
 
-      <View style={{alignItems: 'stretch', flex: 1}}>
-        <TouchableOpacity
-          style={styles.profileButton}
-          onPress={() =>
-            props.navigation.navigate('VisitList', {
-              language: language,
-              patient: patient,
-              userName,
-            })
-          }>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              padding: 20,
-            }}>
-            <Text style={styles.gridItemText}>
-              {LocalizedStrings[language].visitHistory}
-            </Text>
-            <Text style={styles.gridItemText}>{`>`}</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.profileButton}
-          onPress={() =>
-            props.navigation.navigate('SnapshotList', {
-              eventType: EventTypes.MedicalHistoryFull,
-              patient: patient,
-            })
-          }>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              padding: 20,
-            }}>
-            <Text style={styles.gridItemText}>
-              {LocalizedStrings[language].medicalHistory}
-            </Text>
-            <Text style={styles.gridItemText}>{`>`}</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.profileButton}
-          onPress={() =>
-            props.navigation.navigate('SnapshotList', {
-              eventType: EventTypes.Complaint,
-              patient: patient,
-            })
-          }>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              padding: 20,
-            }}>
-            <Text style={styles.gridItemText}>
-              {LocalizedStrings[language].complaint}
-            </Text>
-            <Text style={styles.gridItemText}>{`>`}</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.profileButton}
-          onPress={() =>
-            props.navigation.navigate('SnapshotList', {
-              eventType: EventTypes.ExaminationFull,
-              patient: patient,
-            })
-          }>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              padding: 20,
-            }}>
-            <Text style={styles.gridItemText}>
-              {LocalizedStrings[language].examination}
-            </Text>
-            <Text style={styles.gridItemText}>{`>`}</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.profileButton}
-          onPress={() =>
-            props.navigation.navigate('SnapshotList', {
-              eventType: EventTypes.Medicine,
-              patient: patient,
-            })
-          }>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              padding: 20,
-            }}>
-            <Text style={styles.gridItemText}>
-              {LocalizedStrings[language].medicine}
-            </Text>
-            <Text style={styles.gridItemText}>{`>`}</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+        <View style={{alignItems: 'stretch', flex: 1}}>
+          <TouchableOpacity
+            style={styles.profileButton}
+            onPress={() =>
+              props.navigation.navigate('VisitList', {
+                language: language,
+                patient: patient,
+                userName,
+              })
+            }>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                padding: 20,
+              }}>
+              <Text style={styles.gridItemText}>
+                {LocalizedStrings[language].visitHistory}
+              </Text>
+              <Text style={styles.gridItemText}>{`>`}</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.profileButton}
+            onPress={() =>
+              props.navigation.navigate('SnapshotList', {
+                eventType: EventTypes.MedicalHistoryFull,
+                patient: patient,
+              })
+            }>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                padding: 20,
+              }}>
+              <Text style={styles.gridItemText}>
+                {LocalizedStrings[language].medicalHistory}
+              </Text>
+              <Text style={styles.gridItemText}>{`>`}</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.profileButton}
+            onPress={() =>
+              props.navigation.navigate('SnapshotList', {
+                eventType: EventTypes.Complaint,
+                patient: patient,
+              })
+            }>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                padding: 20,
+              }}>
+              <Text style={styles.gridItemText}>
+                {LocalizedStrings[language].complaint}
+              </Text>
+              <Text style={styles.gridItemText}>{`>`}</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.profileButton}
+            onPress={() =>
+              props.navigation.navigate('SnapshotList', {
+                eventType: EventTypes.ExaminationFull,
+                patient: patient,
+              })
+            }>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                padding: 20,
+              }}>
+              <Text style={styles.gridItemText}>
+                {LocalizedStrings[language].examination}
+              </Text>
+              <Text style={styles.gridItemText}>{`>`}</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.profileButton}
+            onPress={() =>
+              props.navigation.navigate('SnapshotList', {
+                eventType: EventTypes.Medicine,
+                patient: patient,
+              })
+            }>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                padding: 20,
+              }}>
+              <Text style={styles.gridItemText}>
+                {LocalizedStrings[language].medicine}
+              </Text>
+              <Text style={styles.gridItemText}>{`>`}</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
 
-      <View style={styles.newVisit}>
-        <Button
-          title={LocalizedStrings[language].newVisit}
-          color={'#F77824'}
-          onPress={() => {
-            const newVisitId = uuid();
-            database.addVisit({
-              id: newVisitId,
-              patient_id: patient.id,
-              clinic_id: clinicId,
-              provider_id: userId,
-            });
-            props.navigation.navigate('NewVisit', {
-              patient: patient,
-              visitId: newVisitId.replace(/-/g, ''),
-              userName: userName,
-            });
-          }}
-        />
+        <View style={styles.newVisit}>
+          <Button
+            title={LocalizedStrings[language].newVisit}
+            color={'#F77824'}
+            onPress={() => {
+              const newVisitId = uuid();
+              database.addVisit({
+                id: newVisitId,
+                patient_id: patient.id,
+                clinic_id: clinicId,
+                provider_id: userId,
+              });
+              props.navigation.navigate('NewVisit', {
+                patient: patient,
+                visitId: newVisitId.replace(/-/g, ''),
+                userName: userName,
+              });
+            }}
+          />
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

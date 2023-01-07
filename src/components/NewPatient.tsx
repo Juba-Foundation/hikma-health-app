@@ -13,6 +13,7 @@ import {Picker} from '@react-native-picker/picker';
 import {database} from '../storage/Database';
 import {v4 as uuid} from 'uuid';
 import styles from './Style';
+import * as PatientTypes from '../types/Patient';
 // import DatePicker from 'react-native-date-picker';
 import {LocalizedStrings} from '../enums/LocalizedStrings';
 import {EventTypes} from '../enums/EventTypes';
@@ -22,6 +23,7 @@ import moment from 'moment';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/RootNavigation';
 import {useLanguageStore} from '../stores/language';
+import {useProviderStore} from '../stores/provider';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NewPatient'>;
 
@@ -35,19 +37,24 @@ const DEFAULT_DOB = (() => {
 
 const NewPatient = (props: Props) => {
   const {language} = useLanguageStore();
+  const {provider} = useProviderStore();
 
   const [givenName, setGivenName] = useState('');
   const [surname, setSurname] = useState('');
+  const [serialNumber, setSerialNumber] = useState('');
   const [dob, setDob] = useState(DEFAULT_DOB);
   const [male, setMale] = useState(false);
   const [country, setCountry] = useState('');
   const [hometown, setHometown] = useState('');
   const [phone, setPhone] = useState('');
   const [camp, setCamp] = useState('');
+  const [section, setSection] = useState('');
   const [loading, setLoading] = useState(false);
 
   const today = new Date();
   const [patientId] = useState(uuid().replace(/-/g, ''));
+
+  console.warn({instanceUrl: props.route.params.instanceUrl});
 
   const handleSaveCamp = (campName: string) => {
     database
@@ -82,15 +89,21 @@ const NewPatient = (props: Props) => {
       const hometownId = await database.saveStringContent([
         {language: language, content: hometown},
       ]);
+      const sectionId = await database.saveStringContent([
+        {language: language, content: section},
+      ]);
 
-      const patient = {
+      const patient: PatientTypes.NewPatient = {
         id: patientId,
         given_name: givenNameId,
         surname: surnameId,
         date_of_birth: moment().format('YYYY-MM-DD'),
         country: countryId,
         hometown: hometownId,
+        section: sectionId,
+        serial_number: serialNumber,
         phone: phone,
+        registered_by_provider_id: provider?.id || '',
         sex: male ? 'M' : 'F',
       };
 
@@ -98,9 +111,11 @@ const NewPatient = (props: Props) => {
         if (!!camp) {
           handleSaveCamp(camp);
         }
-        props.navigation.navigate('PatientList', {
-          reloadPatientsToggle: !props.route?.params?.reloadPatientsToggle,
-        });
+        props.navigation.goBack();
+        // props.navigation.navigate('PatientList', {
+        //   reloadPatientsToggle: !props.route?.params?.reloadPatientsToggle,
+        //   instanceUrl: props.route.params.instanceUrl,
+        // });
       });
     } catch (error) {
       Alert.alert('An error occured. Please try again.');
@@ -120,7 +135,13 @@ const NewPatient = (props: Props) => {
 
   return (
     <View style={styles.container}>
-      <Header action={() => props.navigation.navigate('PatientList', {})} />
+      <Header
+        action={() =>
+          props.navigation.navigate('PatientList', {
+            instanceUrl: props.route.params.instanceUrl,
+          })
+        }
+      />
       <View style={styles.inputRow}>
         <TextInput
           style={styles.inputs}
@@ -135,6 +156,22 @@ const NewPatient = (props: Props) => {
           placeholder={LocalizedStrings[language].surname}
           onChangeText={(text) => setSurname(text)}
           value={surname}
+        />
+      </View>
+      <View style={styles.inputRow}>
+        <TextInput
+          style={styles.inputs}
+          placeholder={LocalizedStrings[language].serialNumber}
+          onChangeText={(text) => setSerialNumber(text)}
+          value={serialNumber}
+        />
+      </View>
+      <View style={styles.inputRow}>
+        <TextInput
+          style={styles.inputs}
+          placeholder={LocalizedStrings[language].phone}
+          onChangeText={(text) => setPhone(text)}
+          value={phone}
         />
       </View>
       <View style={styles.inputRow}>
@@ -175,10 +212,12 @@ const NewPatient = (props: Props) => {
           value={camp}
         />
         <TextInput
-          style={styles.inputs}
-          placeholder={LocalizedStrings[language].phone}
-          onChangeText={(text) => setPhone(text)}
-          value={phone}
+          style={[styles.inputs]}
+          placeholder={LocalizedStrings[language].section}
+          onChangeText={(text) => {
+            setSection(text);
+          }}
+          value={section}
         />
       </View>
       <View style={{marginTop: 30}}>

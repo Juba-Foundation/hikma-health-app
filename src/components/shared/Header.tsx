@@ -22,7 +22,8 @@ const Header: FC<HeaderProps> = (props) => {
           flex: 1,
           display: 'flex',
         }}>
-        <View style={[styles.card]}>
+        <View
+          style={[styles.card, {paddingVertical: 2, paddingHorizontal: 14}]}>
           <TouchableOpacity onPress={() => props.action()}>
             <Text>{LocalizedStrings[language].back}</Text>
           </TouchableOpacity>

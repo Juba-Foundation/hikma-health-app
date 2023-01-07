@@ -71,3 +71,4 @@ buck-out/
 
 
 ios/.xcode.env.local
+.env

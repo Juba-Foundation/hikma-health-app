@@ -11,6 +11,7 @@ import {
   Modal,
   TouchableHighlight,
   Button,
+  ViewStyle,
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {database} from '../storage/Database';
@@ -23,11 +24,15 @@ import LanguageToggle from './shared/LanguageToggle';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/RootNavigation';
 import {useLanguageStore} from '../stores/language';
+import {useIsFocused} from '@react-navigation/native';
+// import {useProviderStore} from '../stores/provider';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PatientList'>;
 
 const PatientList = (props: Props) => {
   const databaseSync: DatabaseSync = new DatabaseSync();
+  const isFocused = useIsFocused();
+  // const {provider} = useProviderStore();
   const {email, password, clinicId, instanceUrl} = props.route.params;
   const [userId, setUserId] = useState(props.route.params.userId);
   const [list, setList] = useState([]);
@@ -48,8 +53,10 @@ const PatientList = (props: Props) => {
   const {language} = useLanguageStore();
 
   useEffect(() => {
-    searchPatients();
-  }, [props.route.params.reloadPatientsToggle, language]);
+    if (isFocused) {
+      searchPatients();
+    }
+  }, [props.route.params.reloadPatientsToggle, language, isFocused]);
 
   const keyExtractor = (item, index) => index.toString();
 
@@ -195,8 +202,6 @@ const PatientList = (props: Props) => {
     </TouchableOpacity>
   );
 
-  console.warn(instanceUrl);
-
   return (
     <View style={styles.main}>
       <View style={styles.listContainer}>
@@ -209,28 +214,45 @@ const PatientList = (props: Props) => {
           </View>
 
           <LanguageToggle />
-          <TouchableOpacity
-            onPress={async () => {
-              await databaseSync.performSync(
-                instanceUrl,
-                email,
-                password,
-                language,
-              );
-              reloadPatients();
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
             }}>
-            <View
-              style={[
-                styles.card,
-                {flexDirection: 'row', alignItems: 'center'},
-              ]}>
-              <Text>{LocalizedStrings[language].sync}</Text>
-              <Image
-                source={require('../images/sync.png')}
-                style={{width: 15, height: 15, marginLeft: 5}}
-              />
-            </View>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate('SummaryStats')}
+              style={{
+                backgroundColor: '#fff',
+                paddingHorizontal: 12,
+                paddingVertical: 6,
+                borderRadius: 8,
+              }}>
+              <Text>Summary</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={async () => {
+                await databaseSync.performSync(
+                  instanceUrl,
+                  email,
+                  password,
+                  language,
+                );
+                reloadPatients();
+              }}>
+              <View
+                style={[
+                  styles.card,
+                  {flexDirection: 'row', alignItems: 'center'},
+                ]}>
+                <Text>{LocalizedStrings[language].sync}</Text>
+                <Image
+                  source={require('../images/sync.png')}
+                  style={{width: 15, height: 15, marginLeft: 5}}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View
@@ -300,7 +322,7 @@ const PatientList = (props: Props) => {
             onPress={() =>
               props.navigation.navigate('NewPatient', {
                 reloadPatientsToggle: props.route.params.reloadPatientsToggle,
-                language: language,
+                instanceUrl,
               })
             }
           />
@@ -308,16 +330,24 @@ const PatientList = (props: Props) => {
       </View>
       <Modal
         animationType="fade"
-        transparent={false}
+        transparent={!true}
+        hardwareAccelerated
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.leftView}>
           <View
             style={[
               styles.modalView,
-              {alignItems: 'stretch', justifyContent: 'space-between', flex: 1},
+              {alignItems: 'stretch', justifyContent: 'space-between'},
             ]}>
-            <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginTop: -24,
+                marginBottom: 20,
+              }}>
+              <Text style={{fontSize: 24}}>Advanced Filters</Text>
               <TouchableHighlight
                 onPress={() => {
                   setModalVisible(!modalVisible);
@@ -325,7 +355,7 @@ const PatientList = (props: Props) => {
                 }}>
                 <Image
                   source={require('../images/close.png')}
-                  style={{width: 15, height: 15}}
+                  style={{width: 20, height: 20}}
                 />
               </TouchableHighlight>
             </View>
@@ -334,11 +364,13 @@ const PatientList = (props: Props) => {
               <TextInput
                 placeholder={LocalizedStrings[language].firstName}
                 onChangeText={(text) => setGivenName(text)}
+                style={INPUT_CONTAINER_L}
                 value={givenName}
               />
               <TextInput
                 placeholder={LocalizedStrings[language].surname}
                 onChangeText={(text) => setSurname(text)}
+                style={INPUT_CONTAINER_R}
                 value={surname}
               />
             </View>
@@ -347,11 +379,13 @@ const PatientList = (props: Props) => {
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <TextInput
                 placeholder={LocalizedStrings[language].country}
+                style={INPUT_CONTAINER_L}
                 onChangeText={(text) => setCountry(text)}
                 value={country}
               />
               <TextInput
                 placeholder={LocalizedStrings[language].hometown}
+                style={INPUT_CONTAINER_R}
                 onChangeText={(text) => setHometown(text)}
                 value={hometown}
               />
@@ -361,11 +395,13 @@ const PatientList = (props: Props) => {
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <TextInput
                 placeholder={LocalizedStrings[language].camp}
+                style={INPUT_CONTAINER_L}
                 onChangeText={(text) => setCamp(text)}
                 value={camp}
               />
               <TextInput
                 placeholder={LocalizedStrings[language].phone}
+                style={INPUT_CONTAINER_R}
                 onChangeText={(text) => setPhone(text)}
                 value={phone}
               />
@@ -421,4 +457,22 @@ const PatientList = (props: Props) => {
   );
 };
 
+const INPUT_CONTAINER: ViewStyle = {
+  borderRadius: 4,
+  borderWidth: 1,
+  borderColor: '#ccc',
+  flex: 1,
+  padding: 8,
+  marginBottom: 10,
+};
+
+const INPUT_CONTAINER_L: ViewStyle = {
+  ...INPUT_CONTAINER,
+  marginRight: 4,
+};
+
+const INPUT_CONTAINER_R: ViewStyle = {
+  ...INPUT_CONTAINER,
+  marginLeft: 4,
+};
 export default PatientList;

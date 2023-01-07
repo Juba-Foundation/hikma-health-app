@@ -99,6 +99,7 @@ export default StyleSheet.create({
       width: 0,
       height: 2,
     },
+    color: '#111827',
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },

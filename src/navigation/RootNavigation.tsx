@@ -28,6 +28,7 @@ import SnapshotList from '../components/SnapshotList';
 import {Patient} from '../types/Patient';
 import {Event} from '../types/Event';
 import {Visit} from '../types/Visit';
+import SummaryStats from '../components/SummaryStats';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -41,6 +42,7 @@ export type RootStackParamList = {
   };
   NewPatient: {
     reloadPatientsToggle: boolean;
+    instanceUrl: string;
   };
   PatientView: {
     clinicId: string;
@@ -124,6 +126,7 @@ export type RootStackParamList = {
     eventType: any;
     events: Event[];
   };
+  SummaryStats: {};
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -156,6 +159,7 @@ export default function RootNavigator() {
       <Stack.Screen name="EditPhysiotherapy" component={EditPhysiotherapy} />
       <Stack.Screen name="EditMedicine" component={EditMedicine} />
       <Stack.Screen name="SnapshotList" component={SnapshotList} />
+      <Stack.Screen name="SummaryStats" component={SummaryStats} />
     </Stack.Navigator>
   );
 }

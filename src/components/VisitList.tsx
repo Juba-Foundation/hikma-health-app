@@ -22,7 +22,6 @@ const VisitList = (props: Props) => {
     database.getVisits(patient.id).then((visits) => {
       setList(visits);
     });
-    // FIXME: Why is this db call dependent on language?
   }, [props, language]);
 
   const keyExtractor = (item, index) => index.toString();

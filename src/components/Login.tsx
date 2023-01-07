@@ -11,18 +11,23 @@ import {
   Pressable,
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
+import {omit} from 'lodash';
+import {HIKMA_API} from '@env';
 
+import {User} from '../types/User';
 import {database} from '../storage/Database';
 import {StringContent} from '../types/StringContent';
 import {NewUser} from '../types/User';
 import {DatabaseSync} from '../storage/Sync';
 import {Clinic} from '../types/Clinic';
 import styles from './Style';
+import {useProviderStore} from '../stores/provider';
 
 const Login = (props) => {
   const databaseSync = new DatabaseSync();
-  const [email, setEmail] = useState('demo@hikmahealth.org');
-  const [password, setPassword] = useState('HikmaHealth');
+  const {provider, setProvider} = useProviderStore();
+  const [email, setEmail] = useState('admin@hikmahealth.org');
+  const [password, setPassword] = useState('HikmaAdmin25!');
   const [instanceList, setInstanceList] = useState([]);
   const [selectedInstance, setSelectedInstance] = useState();
   const [showInstanceDropdown, setShowInstanceDropdown] = useState(false);
@@ -52,11 +57,13 @@ const Login = (props) => {
   //   name: 'local',
   //   url: '24.255.32.181:8080',
   // });
+  //
 
   const getInstances = async (): Promise<any> => {
-    return fetch('https://demo-api.hikmahealth.org/api/instances', {
+    return fetch(`${HIKMA_API}/api/instances`, {
       method: 'GET',
     }).then((response) => {
+      console.log({response});
       return response.json();
     });
   };
@@ -120,14 +127,22 @@ const Login = (props) => {
           name: nameId,
           role: responseJson.role,
           email: responseJson.email,
+          phone: responseJson.phone,
           instance_url: selectedInstance.url,
         };
         userId = responseJson.id.replace(/-/g, '');
         instanceUrl = selectedInstance.url;
         await database.addUser(newUser, password);
+
+        setProvider({
+          ...newUser,
+          name: {content: stringContentArray, id: responseJson.name.id},
+        });
       } else {
         userId = user.id;
         instanceUrl = user.instance_url;
+
+        setProvider(omit(user, 'hashed_password') as User);
       }
 
       const clinics: Clinic[] = await database.getClinics();
